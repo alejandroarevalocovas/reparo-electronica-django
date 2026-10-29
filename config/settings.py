@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     # Terceros
     'rest_framework',
     'usuarios',
+    'django.contrib.postgres',
+    'taller',
 ]
 
 AUTH_USER_MODEL = 'usuarios.Usuario'
