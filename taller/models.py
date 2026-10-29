@@ -21,9 +21,36 @@ class Cliente(models.Model):
     def __str__(self):
         return self.nombre
 
+class Stock(models.Model):
+    referencia = models.CharField(max_length=100)
+    tipo = models.CharField(max_length=100)
+    formato = models.CharField(max_length=100, blank=True)
+    estado = models.CharField(max_length=50, blank=True)
+    ubicacion = models.CharField(max_length=100, blank=True)
+
+    cantidad = models.PositiveIntegerField(null=True, blank=True)
+    cantidad_total = models.PositiveIntegerField()
+    cantidad_minima = models.PositiveIntegerField(null=True, blank=True)
+
+    precio = models.DecimalField(max_digits=10, decimal_places=2)
+    fecha_compra = models.DateField(null=True, blank=True)
+    enlace_compra = models.URLField(max_length=255, blank=True)
+    visto_en = models.CharField(max_length=255, blank=True)
+    fecha_actual = models.DateField(null=True, blank=True)
+
+    comentarios = models.TextField(blank=True)
+    detalles = models.JSONField(default=dict, blank=True)
+
+    class Meta:
+        ordering = ["referencia"]
+        verbose_name_plural = "stock"
+
+    def __str__(self):
+        return f"{self.referencia} ({self.tipo})"
 
 class Pedido(models.Model):
     cliente = models.ForeignKey(Cliente, on_delete=models.PROTECT, related_name="pedidos")
+    materiales = models.ManyToManyField(Stock, through="PedidoStock", related_name="pedidos", blank=True)
 
     class Estado(models.TextChoices):
         PENDIENTE = "pendiente", "Pendiente"
@@ -64,3 +91,18 @@ class Pedido(models.Model):
 
     def __str__(self):
         return f"#{self.pk} {self.equipo} ({self.cliente})"
+
+class PedidoStock(models.Model):
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)
+    stock = models.ForeignKey(Stock, on_delete=models.PROTECT)
+    cantidad_usada = models.PositiveIntegerField()
+
+    class Meta:
+        verbose_name = "material usado"
+        verbose_name_plural = "materiales usados"
+        constraints = [
+            models.UniqueConstraint(fields=["pedido", "stock"], name="pieza_unica_por_pedido"),
+        ]
+
+    def __str__(self):
+        return f"{self.cantidad_usada} x {self.stock}"
