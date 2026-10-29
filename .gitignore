@@ -1,0 +1,25 @@
+# Entorno virtual
+.venv/
+
+# Variables de entorno (credenciales)
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Django
+db.sqlite3
+media/
+staticfiles/
+
+# Tests y cobertura
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Editor / SO
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store

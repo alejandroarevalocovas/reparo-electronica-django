@@ -1,0 +1,18 @@
+# Base de datos PostgreSQL local, solo para desarrollo.
+# Arrancar:  docker compose up -d
+# Parar:     docker compose down   (los datos se conservan en el volumen)
+services:
+  db:
+    image: postgres:17
+    container_name: reparo-django-db
+    environment:
+      POSTGRES_DB: reparo_django
+      POSTGRES_USER: reparo_dev
+      POSTGRES_PASSWORD: reparo_dev
+    ports:
+      - "5433:5432"   # 5433 en tu PC para no chocar con otro PostgreSQL
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
